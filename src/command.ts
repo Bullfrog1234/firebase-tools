@@ -12,6 +12,7 @@ import { trackEmulator, trackGA4 } from "./track";
 import { selectAccount, setActiveAccount } from "./auth";
 import { getFirebaseProject } from "./management/projects";
 import { requireAuth } from "./requireAuth";
+import { Options } from "./options";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ActionFunction = (...args: any[]) => any;
@@ -356,11 +357,7 @@ export class Command {
     }
   }
 
-  private async resolveProjectIdentifiers(options: {
-    project?: string;
-    projectId?: string;
-    projectNumber?: string;
-  }): Promise<void> {
+  private async resolveProjectIdentifiers(options: Options): Promise<void> {
     if (options.project?.match(/^\d+$/)) {
       await requireAuth(options);
       const { projectId, projectNumber } = await getFirebaseProject(options.project);
