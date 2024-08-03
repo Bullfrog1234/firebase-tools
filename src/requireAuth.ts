@@ -7,7 +7,6 @@ import { FirebaseError } from "./error";
 import { logger } from "./logger";
 import * as utils from "./utils";
 import * as scopes from "./scopes";
-import { Tokens, User } from "./types/auth";
 import { setRefreshToken, setActiveAccount, setGlobalDefaultAccount } from "./auth";
 import type { Options } from "./options";
 
@@ -67,13 +66,13 @@ async function autoAuth(options: Options, authScopes: string[]): Promise<void | 
  * Ensures that there is an authenticated user.
  * @param options CLI options.
  */
-export async function requireAuth(options: any): Promise<string | void> {
+export async function requireAuth(options: Options): Promise<string | void> {
   api.setScopes([scopes.CLOUD_PLATFORM, scopes.FIREBASE_PLATFORM]);
   options.authScopes = api.getScopes();
 
-  const tokens = options.tokens as Tokens | undefined;
-  const user = options.user as User | undefined;
-  let tokenOpt = utils.getInheritedOption(options, "token");
+  const tokens = options.tokens;
+  const user = options.user;
+  let tokenOpt = utils.getInheritedOption(options, "token") as string | undefined;
   if (tokenOpt) {
     logger.debug("> authorizing via --token option");
     utils.logWarning(
@@ -91,10 +90,10 @@ export async function requireAuth(options: any): Promise<string | void> {
   } else {
     try {
       return await autoAuth(options, options.authScopes);
-    } catch (e: any) {
+    } catch (e) {
       throw new FirebaseError(
         `Failed to authenticate, have you run ${clc.bold("firebase login")}?`,
-        { original: e },
+        { original: e as Error | undefined },
       );
     }
   }
