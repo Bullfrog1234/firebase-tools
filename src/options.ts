@@ -1,5 +1,6 @@
 import { Config } from "./config";
 import { RC } from "./rc";
+import { Tokens, User } from "./types/auth";
 
 // Options come from command-line options and stored config values
 // TODO: actually define all of this stuff in command.ts and import it from there.
@@ -28,6 +29,11 @@ export interface BaseOptions {
   // Emulator specific import/export options
   exportOnExit?: boolean | string;
   import?: string;
+
+  // Options that are present when Authentication exists
+  tokens?: Tokens;
+  user?: User;
+  authScopes?: string[];
 }
 
 export interface Options extends BaseOptions {
